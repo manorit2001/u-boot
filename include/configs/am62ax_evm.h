@@ -54,39 +54,6 @@
 		"${bootdir}/${name_fit}\0"				\
 	"partitions=" PARTS_DEFAULT
 
-#define BOOTENV_DEV_TI_MMC(devtypeu, devtypel, instance)		\
-	DEFAULT_MMC_TI_ARGS						\
-	EXTRA_ENV_AM62A7_BOARD_SETTINGS_MMC				\
-	"bootcmd_ti_mmc="						\
-		"run findfdt; run envboot; run init_mmc;"		\
-		"if test ${boot_fit} -eq 1; then;"			\
-			"run get_fit_mmc; run get_overlaystring;"	\
-			"run run_fit;"					\
-		"else;"							\
-			"run get_kern_mmc; run get_fdt_mmc;"		\
-			"run get_overlay_mmc;"				\
-			"run run_kern;"					\
-		"fi;\0"
-
-#define BOOTENV_DEV_NAME_TI_MMC(devtyeu, devtypel, instance)		\
-	"ti_mmc "
-
-#if IS_ENABLED(CONFIG_CMD_MMC)
-	#define BOOT_TARGET_MMC(func)					\
-		func(TI_MMC, ti_mmc, na)
-#else
-	#define BOOT_TARGET_MMC(func)
-#endif /* IS_ENABLED(CONFIG_CMD_MMC) */
-
-#define BOOT_TARGET_DEVICES(func)					\
-	BOOT_TARGET_MMC(func)
-
-#include <config_distro_bootcmd.h>
-
-/* Incorporate settings into the U-Boot environment */
-#define CFG_EXTRA_ENV_SETTINGS					\
-	BOOTENV
-
 /* Now for the remaining common defines */
 #include <configs/ti_armv7_common.h>
 
