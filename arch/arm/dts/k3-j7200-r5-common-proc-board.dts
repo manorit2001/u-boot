@@ -11,6 +11,10 @@
 #include "k3-j7200-common-proc-board-u-boot.dtsi"
 
 / {
+	chosen {
+		tick-timer = &mcu_timer0;
+	};
+
 	aliases {
 		remoteproc0 = &sysctrler;
 		remoteproc1 = &a72_0;
@@ -53,11 +57,9 @@
 
 &mcu_timer0 {
 	clock-frequency = <250000000>;
-	bootph-pre-ram;
 };
 
 &secure_proxy_mcu {
-	bootph-pre-ram;
 	status = "okay";
 };
 
@@ -77,11 +79,6 @@
 	mbox-names = "tx", "rx", "notify";
 	ti,host-id = <4>;
 	ti,secure-host;
-	bootph-pre-ram;
-};
-
-&wkup_vtm0 {
-	bootph-pre-ram;
 };
 
 &ospi0 {

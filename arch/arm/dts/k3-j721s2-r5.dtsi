@@ -43,16 +43,13 @@
 
 &mcu_timer0 {
 	clock-frequency = <250000000>;
-	bootph-pre-ram;
 };
 
 &secure_proxy_sa3 {
-	bootph-pre-ram;
 	status = "okay";
 };
 
 &secure_proxy_mcu {
-	bootph-pre-ram;
 	status = "okay";
 };
 

@@ -42,7 +42,6 @@
 
 &mcu_timer0 {
 	status = "okay";
-	bootph-pre-ram;
 };
 
 &dmsc {
@@ -53,7 +52,6 @@
 };
 
 &secure_proxy_mcu {
-	bootph-pre-ram;
 	/* We require this for boot handshake */
 	status = "okay";
 };
@@ -73,8 +71,4 @@
 
 &mcu_udmap {
 	ti,sci = <&dm_tifs>;
-};
-
-&wkup_uart0_pins_default {
-	bootph-pre-ram;
 };

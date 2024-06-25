@@ -5,110 +5,6 @@
 
 #include "k3-j721s2-binman.dtsi"
 
-&wkup_i2c0 {
-	bootph-all;
-};
-
-&cbass_main {
-	bootph-all;
-};
-
-&main_navss {
-	bootph-all;
-};
-
-&cbass_mcu_wakeup {
-	bootph-all;
-};
-
-&wkup_conf {
-	bootph-all;
-};
-
-&chipid {
-	bootph-all;
-};
-
-&mcu_navss {
-	bootph-all;
-};
-
-&mcu_ringacc {
-	bootph-all;
-};
-
-&mcu_udmap {
-	bootph-all;
-};
-
-&secure_proxy_main {
-	bootph-all;
-};
-
-&sms {
-	bootph-all;
-};
-
-&main_pmx0 {
-	bootph-all;
-};
-
-&main_uart8_pins_default {
-	bootph-all;
-};
-
-&main_mmc1_pins_default {
-	bootph-all;
-};
-
-&main_usbss0_pins_default {
-	bootph-all;
-};
-
-&wkup_pmx0 {
-	bootph-all;
-};
-
-&wkup_pmx1 {
-	bootph-all;
-};
-
-&wkup_pmx2 {
-	bootph-all;
-};
-
-&wkup_pmx3 {
-	bootph-all;
-};
-
-&k3_pds {
-	bootph-all;
-};
-
-&k3_clks {
-	bootph-all;
-};
-
-&k3_reset {
-	bootph-all;
-};
-
-&main_uart8 {
-	bootph-all;
-};
-
-&mcu_uart0 {
-	bootph-all;
-};
-
-&wkup_uart0 {
-	bootph-all;
-};
-
-&main_sdhci1 {
-	bootph-all;
-};
-
 &ospi0 {
 	status = "disabled";
 };
@@ -117,13 +13,8 @@
 	status = "disabled";
 };
 
-&usbss0 {
-	bootph-all;
-};
-
 &usb0 {
 	dr_mode = "peripheral";
-	bootph-all;
 };
 
 #ifdef CONFIG_TARGET_J721S2_A72_EVM

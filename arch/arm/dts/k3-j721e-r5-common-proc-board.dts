@@ -12,42 +12,15 @@
 
 #include "k3-j721e-r5.dtsi"
 
-&wkup_i2c0 {
-	bootph-pre-ram;
-	tps659413a: tps659413a@48 {
-		reg = <0x48>;
-		compatible = "ti,tps659413";
+&tps659413 {
+	esm: esm {
+		compatible = "ti,tps659413-esm";
 		bootph-pre-ram;
-		pinctrl-names = "default";
-		pinctrl-0 = <&wkup_i2c0_pins_default>;
-		clock-frequency = <400000>;
-
-		regulators: regulators {
-			bootph-pre-ram;
-			buck12_reg: buck12 {
-				/*VDD_CPU*/
-				regulator-name = "buck12";
-				regulator-min-microvolt = <600000>;
-				regulator-max-microvolt = <900000>;
-				regulator-always-on;
-				regulator-boot-on;
-				bootph-pre-ram;
-			};
-		};
-
-		esm: esm {
-			compatible = "ti,tps659413-esm";
-			bootph-pre-ram;
-		};
 	};
 };
 
-&mcu_uart0_pins_default {
-	bootph-pre-ram;
-};
-
 &wkup_vtm0 {
-	vdd-supply-2 = <&buck12_reg>;
+	vdd-supply-2 = <&bucka12>;
 	bootph-pre-ram;
 };
 
