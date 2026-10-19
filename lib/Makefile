@@ -125,6 +125,7 @@ obj-y += ctype.o
 obj-y += div64.o
 obj-$(CONFIG_$(PHASE_)OF_LIBFDT) += fdtdec.o fdtdec_common.o
 obj-y += hang.o
+obj-$(CONFIG_$(PHASE_)FIRMWARE_HANDOFF) += firmware_handoff.o
 obj-y += linux_compat.o
 obj-y += linux_string.o
 obj-$(CONFIG_$(PHASE_)LMB) += lmb.o

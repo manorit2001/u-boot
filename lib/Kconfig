@@ -1,5 +1,12 @@
 menu "Library routines"
 
+config FIRMWARE_HANDOFF
+	bool
+
+config SPL_FIRMWARE_HANDOFF
+	bool
+	depends on SPL
+
 config ADDR_MAP
 	bool "Enable support for non-identity virtual-physical mappings"
 	help
