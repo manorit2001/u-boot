@@ -75,11 +75,17 @@ static void fdt_fixup_thermal_cooling_device_cpus_am625(void *blob, int core_nr)
 
 int ft_system_setup(void *blob, struct bd_info *bd)
 {
+	int ret;
+
 	fdt_fixup_cores_nodes_am625(blob, k3_get_core_nr());
 	fdt_fixup_gpu_nodes_am625(blob, k3_has_gpu());
 	fdt_fixup_pru_node_am625(blob, k3_has_pru());
 	fdt_fixup_thermal_critical_trips_k3(blob, k3_get_max_temp());
 	fdt_fixup_thermal_cooling_device_cpus_am625(blob, k3_get_core_nr());
 
-	return fdt_fixup_reserved(blob);
+	ret = fdt_fixup_reserved(blob);
+	if (ret)
+		return ret;
+
+	return fdt_fixup_k3_sec_proxy_handoff(blob);
 }

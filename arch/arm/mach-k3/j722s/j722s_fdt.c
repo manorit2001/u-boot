@@ -9,5 +9,7 @@
 
 int ft_system_setup(void *blob, struct bd_info *bd)
 {
-	return fdt_fixup_reserved(blob);
+	int ret = fdt_fixup_reserved(blob);
+
+	return ret ? ret : fdt_fixup_k3_sec_proxy_handoff(blob);
 }

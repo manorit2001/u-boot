@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: GPL-2.0+
+$schema: https://json-schema.org/draft/2020-12/schema
+title: TI K3 firmware secure-proxy handoff configuration
+type: object
+additionalProperties: false
+required: [format, schema-version, platform, secure-proxy]
+properties:
+  format:
+    const: ti-k3-firmware-handoff
+  schema-version:
+    const: 1
+  platform:
+    type: string
+    minLength: 1
+    pattern: '.*\S.*'
+  secure-proxy:
+    type: object
+    additionalProperties: false
+    required: [consumers]
+    properties:
+      consumers:
+        type: object
+        minProperties: 1
+        additionalProperties: false
+        properties:
+          r5-spl: {$ref: '#/$defs/consumer'}
+          tf-a: {$ref: '#/$defs/consumer'}
+          optee: {$ref: '#/$defs/consumer'}
+          aarch64-spl: {$ref: '#/$defs/consumer'}
+          u-boot: {$ref: '#/$defs/consumer'}
+          linux: {$ref: '#/$defs/consumer'}
+$defs:
+  consumer:
+    type: object
+    additionalProperties: false
+    required: [host-id, rx-thread, tx-threads]
+    properties:
+      host-id: {type: integer, minimum: 0, maximum: 255}
+      rx-thread: {type: integer, minimum: 0, maximum: 65535}
+      tx-threads:
+        type: object
+        additionalProperties: false
+        properties:
+          request: {type: integer, minimum: 0, maximum: 65535}
+          request-high: {type: integer, minimum: 0, maximum: 65535}
+          request-low: {type: integer, minimum: 0, maximum: 65535}
+        oneOf:
+          - required: [request]
+            maxProperties: 1
+          - required: [request-high, request-low]
+            maxProperties: 2
