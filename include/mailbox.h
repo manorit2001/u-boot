@@ -102,6 +102,19 @@ int mbox_get_by_name(struct udevice *dev, const char *name,
 		     struct mbox_chan *chan);
 
 /**
+ * mbox_get_by_name_with_id() - Override a named channel's single-cell ID
+ * @dev: Client device
+ * @name: Channel name in the client's DT
+ * @id: Replacement channel ID
+ * @chan: Channel object to initialize
+ *
+ * Retains the DT provider, which may still reject the overridden ID.
+ * Return: 0 on success, or a negative error code.
+ */
+int mbox_get_by_name_with_id(struct udevice *dev, const char *name,
+			     u32 id, struct mbox_chan *chan);
+
+/**
  * mbox_free - Free a previously requested mailbox channel.
  *
  * @chan:	A channel object that was previously successfully requested by
