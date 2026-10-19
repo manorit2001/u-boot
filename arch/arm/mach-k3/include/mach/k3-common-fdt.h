@@ -7,6 +7,7 @@
 #define _K3_COMMON_FDT_H
 
 int fdt_fixup_msmc_ram_k3(void *blob);
+int fdt_fixup_k3_sec_proxy_handoff(void *blob);
 int fdt_del_node_path(void *blob, const char *path);
 int fdt_fixup_reserved(void *blob);
 void fdt_fixup_thermal_critical_trips_k3(void *blob, int maxc);

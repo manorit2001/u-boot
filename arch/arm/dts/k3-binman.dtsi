@@ -277,6 +277,9 @@
 						keyfile = "custMpk.pem";
 					};
 					atf: atf-bl31 {
+#ifdef CONFIG_K3_SEC_PROXY_HANDOFF
+						type = "ti-k3-handoff";
+#endif
 					};
 				};
 
@@ -348,6 +351,9 @@
 					entry = <CONFIG_K3_ATF_LOAD_ADDR>;
 					atf-bl31 {
 						filename = "bl31.bin";
+#ifdef CONFIG_K3_SEC_PROXY_HANDOFF
+						type = "ti-k3-handoff";
+#endif
 					};
 				};
 

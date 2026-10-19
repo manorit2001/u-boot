@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: GPL-2.0+
+# DUMMY VALUES ONLY. Do not use for a board or enable in a defconfig.
+format: ti-k3-firmware-handoff
+schema-version: 1
+platform: dummy-k3-board
+secure-proxy:
+  consumers:
+    r5-spl:
+      host-id: 10
+      tx-threads: {request-high: 0, request-low: 1}
+      rx-thread: 2
+    tf-a:
+      host-id: 11
+      tx-threads: {request: 3}
+      rx-thread: 4
+    optee:
+      host-id: 12
+      tx-threads: {request: 5}
+      rx-thread: 6
+    aarch64-spl:
+      host-id: 13
+      tx-threads: {request-high: 7, request-low: 8}
+      rx-thread: 9
+    u-boot:
+      host-id: 14
+      tx-threads: {request-high: 10, request-low: 11}
+      rx-thread: 12
+    linux:
+      host-id: 15
+      tx-threads: {request-high: 13, request-low: 14}
+      rx-thread: 15

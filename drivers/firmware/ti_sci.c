@@ -20,6 +20,7 @@
 #include <linux/compat.h>
 #include <linux/err.h>
 #include <linux/soc/ti/k3-sec-proxy.h>
+#include <linux/soc/ti/k3-handoff.h>
 #include <linux/soc/ti/ti_sci_protocol.h>
 
 #include "ti_sci.h"
@@ -2891,15 +2892,37 @@ const struct ti_sci_handle *ti_sci_get_by_phandle(struct udevice *dev,
 static int ti_sci_of_to_info(struct udevice *dev, struct ti_sci_info *info)
 {
 	int ret;
+#if CONFIG_IS_ENABLED(K3_SEC_PROXY_HANDOFF)
+	struct k3_handoff_data handoff;
+	u32 tx_thread;
+
+	ret = k3_handoff_get(&handoff);
+	if (ret)
+		return ret;
+	if (handoff.has_request)
+		tx_thread = handoff.tx_request;
+	else if (handoff.has_request_low)
+		tx_thread = handoff.tx_request_low;
+	else
+		return -EINVAL;
+
+	ret = mbox_get_by_name_with_id(dev, "tx", tx_thread, &info->chan_tx);
+#else
 
 	ret = mbox_get_by_name(dev, "tx", &info->chan_tx);
+#endif
 	if (ret) {
 		dev_err(dev, "%s: Acquiring Tx channel failed. ret = %d\n",
 			__func__, ret);
 		return ret;
 	}
 
+#if CONFIG_IS_ENABLED(K3_SEC_PROXY_HANDOFF)
+	ret = mbox_get_by_name_with_id(dev, "rx", handoff.rx_thread,
+				       &info->chan_rx);
+#else
 	ret = mbox_get_by_name(dev, "rx", &info->chan_rx);
+#endif
 	if (ret) {
 		dev_err(dev, "%s: Acquiring Rx channel failed. ret = %d\n",
 			__func__, ret);
@@ -2913,8 +2936,12 @@ static int ti_sci_of_to_info(struct udevice *dev, struct ti_sci_info *info)
 			__func__, ret);
 	}
 
+#if CONFIG_IS_ENABLED(K3_SEC_PROXY_HANDOFF)
+	info->host_id = handoff.host_id;
+#else
 	info->host_id = dev_read_u32_default(dev, "ti,host-id",
 					     info->desc->default_host_id);
+#endif
 
 	info->is_secure = dev_read_bool(dev, "ti,secure-host");
 

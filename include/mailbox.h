@@ -101,6 +101,9 @@ int mbox_get_by_index(struct udevice *dev, int index, struct mbox_chan *chan);
 int mbox_get_by_name(struct udevice *dev, const char *name,
 		     struct mbox_chan *chan);
 
+int mbox_get_by_name_with_id(struct udevice *dev, const char *name,
+			     u32 id, struct mbox_chan *chan);
+
 /**
  * mbox_free - Free a previously requested mailbox channel.
  *

@@ -76,11 +76,17 @@ static void fdt_fixup_thermal_cooling_device_cpus_am62p(void *blob, int core_nr)
 
 int ft_system_setup(void *blob, struct bd_info *bd)
 {
+	int ret;
+
 	fdt_fixup_cores_wdt_nodes_am62p(blob, k3_get_core_nr());
 	fdt_fixup_video_codec_nodes_am62p(blob, k3_has_video_codec());
 	fdt_fixup_canfd_nodes_am62p(blob, k3_has_canfd());
 	fdt_fixup_thermal_critical_trips_k3(blob, k3_get_max_temp());
 	fdt_fixup_thermal_cooling_device_cpus_am62p(blob, k3_get_core_nr());
 
-	return fdt_fixup_reserved(blob);
+	ret = fdt_fixup_reserved(blob);
+	if (ret)
+		return ret;
+
+	return fdt_fixup_k3_sec_proxy_handoff(blob);
 }
