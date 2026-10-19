@@ -31,6 +31,7 @@ Implementation
 
    directories
    bloblist
+   firmware-handoff
    imagemap
    bootstd/index
    ci_testing
