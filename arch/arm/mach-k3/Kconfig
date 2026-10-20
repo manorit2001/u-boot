@@ -98,11 +98,16 @@ config SYS_K3_KEY
 	  it blank so that a random key is generated and used.
 
 config K3_SEC_PROXY_HANDOFF
-	bool
+	bool "Use configured K3 secure-proxy handoff data"
 	depends on OF_LIBFDT && K3_SEC_PROXY && TI_SCI_PROTOCOL
 	select FIRMWARE_HANDOFF
 	select OF_SYSTEM_SETUP
 	select SPL_K3_SEC_PROXY_HANDOFF if SPL
+	help
+	  Embed a stage-specific transfer list generated from K3_HANDOFF_CONFIG and
+	  use it to select the TI-SCI host and secure-proxy mailbox threads. The
+	  images must be packaged and authenticated with the matching handoff data.
+	  This is opt-in and requires K3_HANDOFF_CONFIG at build time.
 
 config SPL_K3_SEC_PROXY_HANDOFF
 	bool
