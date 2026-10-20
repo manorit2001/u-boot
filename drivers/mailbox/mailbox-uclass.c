@@ -32,7 +32,9 @@ static int mbox_of_xlate_default(struct mbox_chan *chan,
 	return 0;
 }
 
-int mbox_get_by_index(struct udevice *dev, int index, struct mbox_chan *chan)
+static int mbox_get_by_index_id(struct udevice *dev, int index,
+				struct mbox_chan *chan, bool override_id,
+				u32 id)
 {
 	struct ofnode_phandle_args args;
 	int ret;
@@ -47,6 +49,11 @@ int mbox_get_by_index(struct udevice *dev, int index, struct mbox_chan *chan)
 		debug("%s: dev_read_phandle_with_args failed: %d\n", __func__,
 		      ret);
 		return ret;
+	}
+	if (override_id) {
+		if (args.args_count != 1)
+			return -EINVAL;
+		args.args[0] = id;
 	}
 
 	ret = uclass_get_device_by_ofnode(UCLASS_MAILBOX, args.node, &dev_mbox);
@@ -86,6 +93,11 @@ int mbox_get_by_index(struct udevice *dev, int index, struct mbox_chan *chan)
 	return 0;
 }
 
+int mbox_get_by_index(struct udevice *dev, int index, struct mbox_chan *chan)
+{
+	return mbox_get_by_index_id(dev, index, chan, false, 0);
+}
+
 int mbox_get_by_name(struct udevice *dev, const char *name,
 		     struct mbox_chan *chan)
 {
@@ -99,7 +111,19 @@ int mbox_get_by_name(struct udevice *dev, const char *name,
 		return index;
 	}
 
-	return mbox_get_by_index(dev, index, chan);
+	return mbox_get_by_index_id(dev, index, chan, false, 0);
+}
+
+int mbox_get_by_name_with_id(struct udevice *dev, const char *name,
+			     u32 id, struct mbox_chan *chan)
+{
+	int index;
+
+	index = dev_read_stringlist_search(dev, "mbox-names", name);
+	if (index < 0)
+		return index;
+
+	return mbox_get_by_index_id(dev, index, chan, true, id);
 }
 
 int mbox_free(struct mbox_chan *chan)

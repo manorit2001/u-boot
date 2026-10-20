@@ -5,6 +5,7 @@
 
 #include <dm.h>
 #include <malloc.h>
+#include <mailbox.h>
 #include <dm/test.h>
 #include <asm/mbox.h>
 #include <test/test.h>
@@ -29,3 +30,22 @@ static int dm_test_mailbox(struct unit_test_state *uts)
 	return 0;
 }
 DM_TEST(dm_test_mailbox, UTF_SCAN_FDT);
+
+static int dm_test_mailbox_override(struct unit_test_state *uts)
+{
+	struct udevice *dev;
+	struct mbox_chan channel;
+
+	ut_assertok(uclass_get_device_by_name(UCLASS_MISC, "mbox-test", &dev));
+	ut_assertok(mbox_get_by_name_with_id(dev, "test", 0, &channel));
+	ut_asserteq(0, channel.id);
+	ut_assertok(mbox_free(&channel));
+	ut_assertok(mbox_get_by_name_with_id(dev, "test", 1, &channel));
+	ut_asserteq(1, channel.id);
+	ut_assertok(mbox_free(&channel));
+	ut_asserteq(-EINVAL, mbox_get_by_name_with_id(dev, "test", 2, &channel));
+	ut_asserteq(-EINVAL, mbox_get_by_name_with_id(dev, "test", ~0U, &channel));
+	return 0;
+}
+
+DM_TEST(dm_test_mailbox_override, UTF_SCAN_FDT);
