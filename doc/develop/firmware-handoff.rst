@@ -1,7 +1,7 @@
 .. SPDX-License-Identifier: GPL-2.0+
 
 Firmware handoff helpers
-=======================
+========================
 
 ``FIRMWARE_HANDOFF`` validates a bounded, checksummed Transfer List v2 and
 provides tag lookup. Platforms implement ``plat_get_transfer_list()`` with a

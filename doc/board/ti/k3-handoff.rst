@@ -1,7 +1,7 @@
 .. SPDX-License-Identifier: GPL-2.0+
 
 TI K3 secure-proxy handoff (experimental)
-========================================
+=========================================
 
 The opt-in ``ti-k3-handoff`` binman entry combines BL31 with a 4096-byte
 Transfer List v2 region. The combined output must be signed as a whole; signing
@@ -102,7 +102,7 @@ rebuild/repackage U-Boot and its embedded records, but reuse the same BL31 binar
 and ELF. Do not mix the binary from one TF-A build with another build's ELF.
 
 Reusable and vendor-specific pieces
-----------------------------------
+-----------------------------------
 
 ``tools/binman/firmware_handoff.py`` serializes standard containers and verifies
 ELF/image identity and runtime-safe placement without knowing TI payloads.

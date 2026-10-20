@@ -11,3 +11,4 @@ Texas Instruments
    dra7xx_evm
    ks2_evm
    k3
+   k3-handoff
