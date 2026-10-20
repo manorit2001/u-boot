@@ -1688,6 +1688,10 @@ binman_dtb = ./u-boot.dtb
 endif
 endif
 
+# Share the input search order with stage-local data generation.
+export binman_indirs := . $(srctree)/board/$(BOARDDIR) $(srctree) \
+	$(of_list_dirs) $(BINMAN_INDIRS)
+
 quiet_cmd_binman = BINMAN  $@
 cmd_binman = $(srctree)/tools/binman/binman $(if $(BINMAN_DEBUG),-D) \
 		$(foreach f,$(BINMAN_TOOLPATHS),--toolpath $(f)) \
@@ -1696,9 +1700,7 @@ cmd_binman = $(srctree)/tools/binman/binman $(if $(BINMAN_DEBUG),-D) \
 		build -u -d $(binman_dtb) -O . -m \
 		--allow-missing --fake-ext-blobs \
 		$(if $(BINMAN_ALLOW_MISSING),--ignore-missing) \
-		-I . -I $(srctree)/board/$(BOARDDIR) -I $(srctree) \
-		$(foreach f,$(of_list_dirs),-I $(f)) -a of-list=$(of_list) \
-		$(foreach f,$(BINMAN_INDIRS),-I $(f)) \
+		$(foreach f,$(binman_indirs),-I $(f)) -a of-list=$(of_list) \
 		$(if $(KEYDIR),-a keydir=$(KEYDIR)) \
 		-a atf-bl1-path=${BL1} \
 		-a atf-bl31-path=${BL31} \

@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0+
 
 import os
+import shutil
+import subprocess
 import tempfile
 import unittest
 
@@ -107,6 +109,38 @@ class TestK3Handoff(unittest.TestCase):
                         '{request-high: 10, request-low: 11}', threads))
                 with self.assertRaisesRegex(ValueError, 'distinct RX and TX'):
                     k3_handoff.load_config(self.config)
+
+    @unittest.skipUnless(shutil.which('make'), 'GNU make is required')
+    def test_kbuild_resolves_and_tracks_config(self):
+        root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+        build = os.path.join(self.temp.name, 'build')
+        os.makedirs(build)
+        makefile = os.path.join(self.temp.name, 'Makefile')
+        with open(makefile, 'w', encoding='utf-8') as stream:
+            stream.write(f'''\
+srctree := {root}
+obj := {build}
+CONFIG_K3_SEC_PROXY_HANDOFF := y
+binman_indirs := . {self.temp.name}/missing {self.temp.name}
+if_changed = @printf '%s\\n' "$(K3_HANDOFF_CONFIG_FILE)" "$^"
+include $(srctree)/arch/arm/mach-k3/Makefile
+.PHONY: FORCE
+FORCE:
+''')
+        for config, expected in (('config.yaml', self.config),
+                                 (self.config, self.config),
+                                 ('missing.yaml', ''),
+                                 ('/missing/k3-config.yaml', '')):
+            with self.subTest(config=config):
+                result = subprocess.check_output([
+                    'make', '--no-print-directory', '-rR', '-f', makefile,
+                    f'K3_HANDOFF_CONFIG={config}',
+                    os.path.join(build, 'k3_handoff_data.h')],
+                    cwd=build, text=True)
+                resolved, prerequisites = result.splitlines()
+                self.assertEqual(resolved, expected)
+                if expected:
+                    self.assertIn(expected, prerequisites.split())
 
 
 if __name__ == '__main__':

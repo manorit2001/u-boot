@@ -26,6 +26,7 @@ class Entry_ti_k3_handoff(Entry_atf_bl31):
         if not elf_path:
             self.Raise('Cannot find BL31 ELF for K3 handoff')
         try:
+            config = tools.get_input_filename(config)
             handoff = generate_from_file(config, ('tf-a', 'optee'),
                                          DEFAULT_CAPACITY)
             combined = append_transfer_list(self.data, elf_path, handoff)

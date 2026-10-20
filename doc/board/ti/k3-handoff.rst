@@ -26,13 +26,15 @@ The shared generator can also produce a stage-local C header for Kbuild::
       --consumer u-boot --consumer linux --output k3_handoff.h --c-header
 
 See ``k3-handoff-schema.yaml`` and ``k3-handoff-example.yaml``. Example thread
-and host values are dummy values only and must not be used on a board.
+and host values are dummy values only; this fixture is not deployable and must
+not be used on a board.
 
 Build and packaging flow
 ------------------------
 
-Use one external YAML file for the stack. Its intended home is alongside the
-corresponding TI firmware release; the example here is only a test fixture.
+Keep the stack's YAML alongside the corresponding TI firmware release.
+``ti-linux-firmware`` provides ``ti-sysfw/k3-handoff-example.yaml`` as a dummy
+template; the copy here is only a test fixture.
 There is no configurable proxy-instance selector: the platform's existing
 secure-proxy driver determines its MMIO instance. The YAML changes host IDs and
 threads, not SoC addresses or SYSFW resource ownership.
@@ -51,24 +53,26 @@ boot path. Neither feature is enabled by default.
 
 For both the R5 and AArch64 U-Boot configurations, enable
 ``CONFIG_K3_SEC_PROXY_HANDOFF`` and ``CONFIG_SPL_K3_SEC_PROXY_HANDOFF`` using
-the normal configuration workflow. No board defconfig is enabled with the
-dummy example. For example, after selecting the appropriate defconfigs::
+the normal configuration workflow. No board defconfig enables this feature.
+For example, after selecting the appropriate defconfigs::
 
   scripts/config --file build/r5/.config -e K3_SEC_PROXY_HANDOFF \
       -e SPL_K3_SEC_PROXY_HANDOFF
   scripts/config --file build/a72/.config -e K3_SEC_PROXY_HANDOFF \
       -e SPL_K3_SEC_PROXY_HANDOFF
 
-Provide the validated, board-specific configuration to every build invocation::
+Provide the validated, board-specific configuration to every build invocation.
+Relative YAML paths use Binman's normal input-directory search, including
+``BINMAN_INDIRS``. For example, with the fixture in ``ti-linux-firmware``::
 
-  export K3_HANDOFF_CONFIG=/absolute/path/to/firmware-handoff.yaml
+  export K3_HANDOFF_CONFIG=ti-sysfw/k3-handoff-example.yaml
+  export BINMAN_INDIRS=/path/to/ti-linux-firmware
   make O=build/r5 CROSS_COMPILE=arm-linux-gnueabihf- olddefconfig
-  make O=build/r5 CROSS_COMPILE=arm-linux-gnueabihf- \
-      BINMAN_INDIRS=/path/to/ti-linux-firmware
+  make O=build/r5 CROSS_COMPILE=arm-linux-gnueabihf-
   make O=build/a72 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
   make O=build/a72 CROSS_COMPILE=aarch64-linux-gnu- \
       BL31=/path/to/bl31.bin BL31_ELF=/path/to/bl31/bl31.elf \
-      TEE=/path/to/tee-raw.bin BINMAN_INDIRS=/path/to/ti-linux-firmware
+      TEE=/path/to/tee-raw.bin
 
 The common K3 Binman templates select ``ti-k3-handoff`` for both signed and
 unsigned BL31 images when this feature is enabled. Secure-image authentication
@@ -118,6 +122,11 @@ Host generator and placement tests::
 
    PYTHONPATH=tools python3 -m unittest binman.firmware_handoff_test \
        binman.k3_handoff_test -v
+
+Binman entry lookup tests also need the built ``pylibfdt`` module::
+
+   PYTHONPATH=tools:build/a72/scripts/dtc/pylibfdt python3 -m unittest \
+       binman.ti_k3_handoff_test -v
 
 Standalone container/payload tests use native sandbox types::
 
