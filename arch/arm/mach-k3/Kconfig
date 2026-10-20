@@ -97,6 +97,17 @@ config SYS_K3_KEY
 	  generating x509 certificate for spl binary. If not needed leave
 	  it blank so that a random key is generated and used.
 
+config K3_SEC_PROXY_HANDOFF
+	bool
+	depends on OF_LIBFDT && K3_SEC_PROXY && TI_SCI_PROTOCOL
+	select FIRMWARE_HANDOFF
+	select SPL_K3_SEC_PROXY_HANDOFF if SPL
+
+config SPL_K3_SEC_PROXY_HANDOFF
+	bool
+	depends on SPL
+	select SPL_FIRMWARE_HANDOFF
+
 config SYS_K3_BOOT_CORE_ID
 	int
 	default 16
