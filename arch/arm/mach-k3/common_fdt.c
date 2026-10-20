@@ -96,6 +96,14 @@ int fdt_fixup_msmc_ram_k3(void *blob)
 	return ret;
 }
 
+#if CONFIG_IS_ENABLED(K3_SEC_PROXY_HANDOFF) && \
+	(CONFIG_IS_ENABLED(SOC_K3_AM642) || CONFIG_IS_ENABLED(SOC_K3_J7200))
+int ft_system_setup(void *blob, struct bd_info *bd)
+{
+	return fdt_fixup_k3_sec_proxy_handoff(blob);
+}
+#endif
+
 int fdt_del_node_path(void *blob, const char *path)
 {
 	int ret;

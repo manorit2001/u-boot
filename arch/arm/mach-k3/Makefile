@@ -7,6 +7,7 @@ obj-$(CONFIG_ARM64) += arm64/
 obj-$(CONFIG_CPU_V7R) += r5/
 obj-$(CONFIG_OF_LIBFDT) += common_fdt.o
 obj-y += common.o security.o k3-ddr.o
+obj-$(CONFIG_OF_LIBFDT) += k3_handoff_fdt.o
 ifeq ($(CONFIG_SPL_BUILD),y)
 obj-$(CONFIG_SPL_K3_SEC_PROXY_HANDOFF) += k3_handoff.o
 K3_HANDOFF_ENABLED := $(CONFIG_SPL_K3_SEC_PROXY_HANDOFF)
